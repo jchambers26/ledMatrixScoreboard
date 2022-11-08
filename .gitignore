@@ -1,2 +1,3 @@
 *.json
 *PRIVATE.py
+*.pyc
