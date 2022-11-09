@@ -108,7 +108,11 @@ class PremierLeagueRender:
         matrix = RGBMatrix(options=self.options)
         canvas = matrix.CreateFrameCanvas()
 
+        font = graphics.Font()
+        font.LoadFont(self.font_path + "5x8.bdf")
+
         for match in sorted(matches):
+
             awayTeam = matches[match]['awayTeam']
             homeTeam = matches[match]['homeTeam']
 
@@ -131,11 +135,57 @@ class PremierLeagueRender:
 
             matrix.Clear()
             matrix.SetImage(new_img, 0, 8)
+            graphics.drawText(canvas, font, 9, 4, graphics.Color(255, 255, 255), f"{self.getAbbreviation(homeTeam)}")
+            graphics.drawText(canvas, font, 31, 4, graphics.Color(255, 255, 255), "vs.")
+            graphics.drawText(canvas, font, 49, 4, graphics.Color(255, 255, 255), f"{self.getAbbreviation(awayTeam)}")
             time.sleep(5)
 
 
 
+    def getAbbreviation(self, team):
 
+        if team == "Arsenal":
+            return "ARS"
+        elif team == "Aston Villa":
+            return "AVL"
+        elif team == "Bournemouth":
+            return "BOU"
+        elif team == "Brentford":
+            return "BRE"
+        elif team == "Brighton":
+            return "BHA"
+        elif team == "Chelsea":
+            return "CHE"
+        elif team == "Crystal Palace":
+            return "CRY"   
+        elif team == "Everton":
+            return "EVE"
+        elif team == "Fulham":
+            return "FUL"
+        elif team == "Leeds":
+            return "LEE"
+        elif team == "Leicester":
+            return "LEI"
+        elif team == "Liverpool":
+            return "LIV"
+        elif team == "Manchester City":
+            return "MCI"
+        elif team == "Manchester United":
+            return "MUN"
+        elif team == "Newcastle":
+            return "NEW"
+        elif team == "Nottingham Forest":
+            return "NFO"
+        elif team == "Southampton":
+            return "SOU"
+        elif team == "Tottenham":
+            return "TOT"
+        elif team == "West Ham":
+            return "WHU"
+        elif team == "Wolves":
+            return "WOL"
+
+        
 
 
     
