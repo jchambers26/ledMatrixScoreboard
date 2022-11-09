@@ -1,3 +1,4 @@
 *.json
 *PRIVATE.py
 *.pyc
+*.png
