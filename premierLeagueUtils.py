@@ -23,7 +23,7 @@ class PremierLeagueUtils():
         request = request['response'][0]['league']['standings'][0]
 
         for team in request:
-            logos['team']['name'] = team['team']['logo']
+            logos[team['team']['name']] = team['team']['logo']
             standings[team['rank']] = {
                 'team' : team['team']['name'],
                 'points' : team['points'],
