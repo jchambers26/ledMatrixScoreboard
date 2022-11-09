@@ -2,6 +2,12 @@ from rgbmatrix import graphics, RGBMatrix, RGBMatrixOptions
 import time
 import json
 from enum import Enum
+from PIL import Image, ImageDraw
+from io import BytesIO
+import requests
+from apikeyPRIVATE import api_key
+import urllib.request
+
 
 class PremierLeagueRender:
     def __init__(self): 
@@ -88,12 +94,49 @@ class PremierLeagueRender:
 
     
     def renderPremierLeagueGames(self):
+
+        headers = {
+            'x-rapidapi-host': "v3.football.api-sports.io",
+            'x-rapidapi-key': api_key
+        }
         
         with open(self.path + 'eplMatches.json', 'r') as file:
             matches = json.load(file)
+        with open(self.path + 'eplLogos.json', 'r') as file:
+            logos = json.load(file)
         
         matrix = RGBMatrix(options=self.options)
         canvas = matrix.CreateFrameCanvas()
+
+        for match in sorted(matches):
+            awayTeam = matches[match]['awayTeam']
+            homeTeam = matches[match]['homeTeam']
+
+            urllib.request.urlretrieve(logos[awayTeam], 'away.png')
+            urllib.request.urlretrieve(logos[homeTeam], 'home.png')
+            awayLogo = Image.open('away.png')
+            homeLogo = Image.open('home.png')
+
+            awayLogo.thumbnail((24, 24), Image.ANTIALIAS)
+            homeLogo.thumbnail((24, 24), Image.ANTIALIAS)
+
+            awayLogo = awayLogo.convert('RGB')
+            homeLogo = homeLogo.convert('RGB')
+
+            print(f"{homeTeam} vs {awayTeam}")
+
+            new_img = Image.new('RGB', (64, 24))
+            new_img.paste(homeLogo, (0,0))
+            new_img.paste(awayLogo, (39,0))
+
+            matrix.Clear()
+            matrix.SetImage(new_img, 0, 8)
+            time.sleep(5)
+
+
+
+
+
 
     
     def plColors(self):
@@ -125,6 +168,6 @@ class PremierLeagueRender:
 if __name__=='__main__':
 
     while True:
-        PremierLeagueRender().renderPremierLeagueStandings()
+        #PremierLeagueRender().renderPremierLeagueStandings()
         PremierLeagueRender().renderPremierLeagueGames()
 

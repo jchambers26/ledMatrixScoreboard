@@ -84,7 +84,9 @@ class PremierLeagueMatches():
             
             matches[id] = {
                 'awayTeam' : awayTeam,
+                'awayId' : x['team_a'],
                 'homeTeam' : homeTeam,
+                'homeId' : x['team_h'],
                 'kickoffTimeYear' : year,
                 'kickoffTimeMonth' : month,
                 'kickoffTimeDay' : day,
