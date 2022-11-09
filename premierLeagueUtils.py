@@ -1,6 +1,7 @@
 import requests
 import json
 from apikeyPRIVATE import api_key
+import urllib
 
 class PremierLeagueUtils():
 
@@ -16,14 +17,14 @@ class PremierLeagueUtils():
         }
 
         standings = {}
-        logos = {}
 
         request = requests.get("http://v3.football.api-sports.io/standings?league=39&season=2022", headers=headers).json()
 
         request = request['response'][0]['league']['standings'][0]
 
         for team in request:
-            logos[team['team']['name']] = team['team']['logo']
+            url = team['team']['logo']
+            urllib.request.urlretrieve(url, f"./eplLogos/{team['team']['name']}.png")
             standings[team['rank']] = {
                 'team' : team['team']['name'],
                 'points' : team['points'],
@@ -37,8 +38,6 @@ class PremierLeagueUtils():
         with open(self.path + "eplStandings.json", 'w') as file:
             json.dump(standings, file)
 
-        with open(self.path + "eplLogos.json", 'w') as file:
-            json.dump(logos, file)
 
 
 if __name__ == '__main__':
