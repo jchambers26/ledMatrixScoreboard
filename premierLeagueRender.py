@@ -116,7 +116,7 @@ class PremierLeagueRender:
         dataFont = graphics.Font()
         dataFont.LoadFont(self.font_path + "4x6.bdf")
 
-        for match in sorted(matches):
+        for match in sorted(matches.keys()):
 
             awayTeam = matches[match]['awayTeam']
             homeTeam = matches[match]['homeTeam']
@@ -278,6 +278,7 @@ if __name__=='__main__':
 
     while True:
         p = PremierLeagueRender()
-        p.renderPremierLeagueStandings()
         p.renderPremierLeagueGames()
+        p.renderPremierLeagueStandings()
+        
 
