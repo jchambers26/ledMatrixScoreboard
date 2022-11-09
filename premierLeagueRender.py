@@ -21,6 +21,8 @@ class PremierLeagueRender:
         self.path = "/home/pi/Documents/Scoreboard/"
         self.font_path = "/home/pi/Documents/rpi-rgb-led-matrix/fonts/"
 
+        self.monthConverter = self.makeMonthConverter()
+
         self.colors = self.plColors()
 
 
@@ -108,18 +110,19 @@ class PremierLeagueRender:
         matrix = RGBMatrix(options=self.options)
         canvas = matrix.CreateFrameCanvas()
 
-        font = graphics.Font()
-        font.LoadFont(self.font_path + "5x8.bdf")
+        teamFont = graphics.Font()
+        teamFont.LoadFont(self.font_path + "5x7.bdf")
+
+        dataFont = graphics.Font()
+        dataFont.LoadFont(self.font_path + "4x6.bdf")
 
         for match in sorted(matches):
 
             awayTeam = matches[match]['awayTeam']
             homeTeam = matches[match]['homeTeam']
 
-            urllib.request.urlretrieve(logos[awayTeam], 'away.png')
-            urllib.request.urlretrieve(logos[homeTeam], 'home.png')
-            awayLogo = Image.open('away.png')
-            homeLogo = Image.open('home.png')
+            awayLogo = Image.open(f"./eplLogos/{awayTeam}.png")
+            homeLogo = Image.open(f"./eplLogos/{homeTeam}.png")
 
             awayLogo.thumbnail((24, 24), Image.ANTIALIAS)
             homeLogo.thumbnail((24, 24), Image.ANTIALIAS)
@@ -127,20 +130,59 @@ class PremierLeagueRender:
             awayLogo = awayLogo.convert('RGB')
             homeLogo = homeLogo.convert('RGB')
 
-            print(f"{homeTeam} vs {awayTeam}")
 
             new_img = Image.new('RGB', (64, 24))
             new_img.paste(homeLogo, (0,0))
             new_img.paste(awayLogo, (39,0))
+            rgb = new_img.load()
 
             matrix.Clear()
-            matrix.SetImage(new_img, 0, 8)
-            graphics.drawText(canvas, font, 9, 4, graphics.Color(255, 255, 255), f"{self.getAbbreviation(homeTeam)}")
-            graphics.drawText(canvas, font, 31, 4, graphics.Color(255, 255, 255), "vs.")
-            graphics.drawText(canvas, font, 49, 4, graphics.Color(255, 255, 255), f"{self.getAbbreviation(awayTeam)}")
+            for x in range(64):
+                for y in range(24):
+                    self.drawPixel(canvas, x, y+8, rgb[x, y])
+            # matrix.SetImage(new_img, 0, 8)
+            graphics.DrawText(canvas, teamFont, 5, 7, self.colors[homeTeam], f"{self.getAbbreviation(homeTeam)}")
+            graphics.DrawText(canvas, teamFont, 44, 7, self.colors[awayTeam], f"{self.getAbbreviation(awayTeam)}")
+
+            if not matches[match]['started']:
+
+                matchMonth = self.monthConverter[matches[match]['kickoffTimeMonth']]
+                matchDay = matches[match]['kickoffTimeDay']
+                matchHour = matches[match]['kickoffTimeHour']
+                if matchHour < 10:
+                    matchHour = "0" + str(matchHour)
+                matchMinute = matches[match]['kickoffTimeMinute']
+                if matchMinute < 10:
+                    matchMinute = "0" + str(matchMinute)
+
+                graphics.DrawText(canvas, dataFont, 22, 7, graphics.Color(255, 255, 255), f"{matchHour}:{matchMinute}")
+                graphics.DrawText(canvas, dataFont, 26, 14, graphics.Color(255, 255, 255), matches[match]['kickoffDay'])
+                graphics.DrawText(canvas, dataFont, 26, 21, graphics.Color(255, 255, 255), matchMonth)
+                graphics.DrawText(canvas, dataFont, 28, 28, graphics.Color(255, 255, 255), str(matchDay))
+
+            else:
+
+                homeGoals = matches[match]['homeTeamScore']
+                awayGoals = matches[match]['awayTeamScore']
+
+                if not matches[match]['finished']:
+
+                    minute = matches[match]['minute']
+                    if minute < 10:
+                        minute = "0" + str(minute)
+
+                else:
+                    minute = "FT"
+                
+                graphics.DrawText(canvas, teamFont, 26, 7, graphics.Color(255, 255, 255), "vs")
+                graphics.DrawText(canvas, dataFont, 28, 16, graphics.Color(255, 255, 255), str(minute))
+                graphics.DrawText(canvas, dataFont, 26, 24, graphics.Color(255, 255, 255), f"{homeGoals}-{awayGoals}")
+
+            canvas = matrix.SwapOnVSync(canvas)
             time.sleep(5)
 
-
+    def drawPixel(self, canvas, x, y, color):
+        graphics.DrawLine(canvas, x, y, x, y, graphics.Color(int(color[0]), int(color[1]), int(color[2])))
 
     def getAbbreviation(self, team):
 
@@ -214,10 +256,28 @@ class PremierLeagueRender:
 
         return colors
 
+    def makeMonthConverter(self):
+        m = {}
+        m[1] = "Jan"
+        m[2] = "Feb"
+        m[3] = "Mar"
+        m[4] = "Apr"
+        m[5] = "May"
+        m[6] = "Jun"
+        m[7] = "Jul"
+        m[8] = "Aug"
+        m[9] = "Sep"
+        m[10] = "Oct"
+        m[11] = "Nov"
+        m[12] = "Dec"
+
+        return m
+
 
 if __name__=='__main__':
 
     while True:
-        #PremierLeagueRender().renderPremierLeagueStandings()
-        PremierLeagueRender().renderPremierLeagueGames()
+        p = PremierLeagueRender()
+        p.renderPremierLeagueStandings()
+        p.renderPremierLeagueGames()
 

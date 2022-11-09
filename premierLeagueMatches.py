@@ -55,6 +55,7 @@ class PremierLeagueMatches():
         for x in fixtures:
             time = parser.parse(x['kickoff_time'])
             time = time.astimezone(localZone)
+            dayString = time.strftime('%A')[0:3]
             year = time.year
             month = time.month
             day = time.day
@@ -92,6 +93,7 @@ class PremierLeagueMatches():
                 'kickoffTimeDay' : day,
                 'kickoffTimeHour' : hour,
                 'kickoffTimeMinute' : minute,
+                'kickoffDay' : dayString,
                 'started' : x['started'],
                 'finished' : x['finished'],
                 'awayTeamScore' : x['team_a_score'],
