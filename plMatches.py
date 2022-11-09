@@ -61,9 +61,30 @@ class PremierLeagueMatches():
             hour = time.hour
             minute = time.minute
 
+            awayTeam = self.teams[x['team_a']]
+            homeTeam = self.teams[x['team_h']]
+
+            if awayTeam == 'Man City':
+                awayTeam = 'Manchester City'
+            elif awayTeam == "Nott'm Forest":
+                awayTeam = 'Nottingham Forest'
+            elif awayTeam == 'Spurs':
+                awayTeam = 'Tottenham'
+            elif awayTeam == 'Man Utd':
+                awayTeam = 'Manchester United'
+            
+            if homeTeam == 'Man City':
+                homeTeam = 'Manchester City'
+            elif homeTeam == "Nott'm Forest":
+                homeTeam = 'Nottingham Forest'
+            elif homeTeam == 'Spurs':
+                homeTeam = 'Tottenham'
+            elif awayTeam == 'Man Utd':
+                awayTeam = 'Manchester United'
+            
             matches[id] = {
-                'awayTeam' : self.teams[x['team_a']],
-                'homeTeam' : self.teams[x['team_h']],
+                'awayTeam' : awayTeam,
+                'homeTeam' : homeTeam,
                 'kickoffTimeYear' : year,
                 'kickoffTimeMonth' : month,
                 'kickoffTimeDay' : day,

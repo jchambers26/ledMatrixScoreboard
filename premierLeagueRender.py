@@ -3,7 +3,7 @@ import time
 import json
 from enum import Enum
 
-class Standings:
+class PremierLeagueRender:
     def __init__(self): 
         self.options = RGBMatrixOptions()
         self.options.hardware_mapping = 'adafruit-hat'
@@ -18,7 +18,7 @@ class Standings:
         self.colors = self.plColors()
 
 
-    def renderEPLStandings(self, printer=False):
+    def renderPremierLeagueStandings(self, printer=False):
 
         with open(self.path + 'eplStandings.json', 'r') as file:
             standings = json.load(file)
@@ -87,6 +87,15 @@ class Standings:
                 canvas = matrix.SwapOnVSync(canvas)
 
     
+    def renderPremierLeagueGames(self):
+        
+        with open(self.path + 'eplMatches.json', 'r') as file:
+            matches = json.load(file)
+        
+        matrix = RGBMatrix(options=self.options)
+        canvas = matrix.CreateFrameCanvas()
+
+    
     def plColors(self):
         colors = {}
         colors['Arsenal'] = graphics.Color(239, 1, 7)
@@ -116,4 +125,6 @@ class Standings:
 if __name__=='__main__':
 
     while True:
-        Standings().renderEPLStandings()
+        PremierLeagueRender().renderPremierLeagueStandings()
+        PremierLeagueRender().renderPremierLeagueGames()
+
