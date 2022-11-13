@@ -47,52 +47,30 @@ class PremierLeagueRender:
         # Loop over first to 20th place
         for place in range(1, 21):
 
-            pos1 = canvas.width
-            pos2 = canvas.width
+            canvas.Clear()
+            # Draw the "EPL Standings" header with a line underneath
+            graphics.DrawText(canvas, titleFont, 0, 6, graphics.Color(255, 255, 255), "EPL Standings")
+            graphics.DrawLine(canvas, 0, 7, 64, 7, graphics.Color(255, 255, 255))
 
-            while True:
-                canvas.Clear()
-                # Draw the "EPL Standings" header with a line underneath
-                len1 = graphics.DrawText(canvas, titleFont, 0, 6, graphics.Color(255, 255, 255), "EPL Standings")
-                graphics.DrawLine(canvas, 0, 7, 64, 7, graphics.Color(255, 255, 255))
+            team = standings[str(place)]['team']
+            points = standings[str(place)]['points']
+            won = standings[str(place)]['won']
+            draw = standings[str(place)]['draw']
+            lost = standings[str(place)]['lost']
 
-                team = standings[str(place)]['team']
-                points = standings[str(place)]['points']
-                won = standings[str(place)]['won']
-                draw = standings[str(place)]['draw']
-                lost = standings[str(place)]['lost']
+            teamString = f"{place}.{self.getAbbreviation(team)} {points}"
+            dataString = f"{won}-{draw}-{lost}"
 
-                teamString = f"{place}. {team}"
-                dataString = f"{points} points {won}-{draw}-{lost}"
+            color = self.colors[team]
 
-                color = self.colors[team]
-
-                # Draw the team name with their table position
-                len2 = graphics.DrawText(canvas, teamFont, pos1, 18, color, teamString)
-                
-                # Draw the point total and record for the team
-                len3 = graphics.DrawText(canvas, teamFont, pos2, 28, color, dataString)
-
-                if (pos1 != canvas.width - len2 - 1 and state == State.FIRST):
-                    pos1 -= 1
-                elif (pos2 != canvas.width - len3 - 1 and state == State.SECOND):
-                    pos2 -= 1
+            # Draw the team name with their table position
+            graphics.DrawText(canvas, teamFont, 0, 18, color, teamString)
             
-                if (pos1 == canvas.width - len2 - 1 and state == state.FIRST):
-                    state = State.SECOND
-                    pos1 = 0
-                    time.sleep(0.5)
-                    pos2 = canvas.width
-                    continue
-                elif (pos2 == canvas.width - len3 - 1 and state == state.SECOND):
-                    state = State.FIRST
-                    pos2 = 0
-                    time.sleep(0.5)
-                    pos1 = canvas.width
-                    break
+            # Draw the point total and record for the team
+            graphics.DrawText(canvas, teamFont, 0, 28, color, dataString)
 
-                time.sleep(0.05)
-                canvas = matrix.SwapOnVSync(canvas)
+            canvas = matrix.SwapOnVSync(canvas)
+            time.sleep(5)
 
     
     def renderPremierLeagueGames(self):
@@ -165,7 +143,7 @@ class PremierLeagueRender:
                 homeGoals = matches[match]['homeTeamScore']
                 awayGoals = matches[match]['awayTeamScore']
 
-                if not matches[match]['finished']:
+                if not matches[match]['finished'] and not matches[match]['minute'] == 90:
 
                     minute = matches[match]['minute']
                     if minute < 10:
@@ -277,8 +255,8 @@ class PremierLeagueRender:
 if __name__=='__main__':
 
     while True:
-        p = PremierLeagueRender()
-        p.renderPremierLeagueStandings()
-        p.renderPremierLeagueGames()
+        PremierLeagueRender().renderPremierLeagueStandings()
+        PremierLeagueRender().renderPremierLeagueGames()
+
         
 
