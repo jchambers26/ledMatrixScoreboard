@@ -12,6 +12,7 @@ class PremierLeagueMatches():
         self.path = "/home/pi/Documents/Scoreboard/eplMatches.json"
         self.gameweek = self.determineCurrentGameweek()
         self.teams = self.mapTeams()
+        self.minuteMap = self.mapMinutes()
 
 
     def determineCurrentGameweek(self):
@@ -43,6 +44,24 @@ class PremierLeagueMatches():
         return teams
 
 
+    def mapMinutes(self):
+
+        minuteMap = {}
+        minuteHelper = requests.get(f"https://fantasy.premierleague.com/api/event/{self.gameweek}/live/").json()
+
+
+        for e in minuteHelper['elements']:
+
+            matchID = e['explain'][0]['fixture']
+            minutes = e['stats']['minutes']
+
+
+            if matchID in minuteMap:
+                minuteMap[matchID] = max(minuteMap[matchID], minutes)
+            else:
+                minuteMap[matchID] = minutes
+        return minuteMap
+
 
     def getMatches(self):
 
@@ -51,6 +70,7 @@ class PremierLeagueMatches():
         matches = {}
 
         fixtures = requests.get(f"https://fantasy.premierleague.com/api/fixtures/?event={self.gameweek}").json()
+
         id = 1
         for x in fixtures:
             time = parser.parse(x['kickoff_time'])
@@ -98,7 +118,7 @@ class PremierLeagueMatches():
                 'finished' : x['finished'],
                 'awayTeamScore' : x['team_a_score'],
                 'homeTeamScore' : x['team_h_score'],
-                'minute' : x['minutes']
+                'minute' : self.minuteMap[x['id']]
             }
             id += 1
         
