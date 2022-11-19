@@ -1,12 +1,7 @@
 from rgbmatrix import graphics, RGBMatrix, RGBMatrixOptions
 import time
 import json
-from enum import Enum
-from PIL import Image, ImageDraw
-from io import BytesIO
-import requests
-from apikeyPRIVATE import api_key
-import urllib.request
+from PIL import Image
 
 class WorldCupRender:
     def __init__(self): 
