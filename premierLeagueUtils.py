@@ -24,7 +24,7 @@ class PremierLeagueUtils():
 
         for team in request:
             url = team['team']['logo']
-            urllib.request.urlretrieve(url, f"./eplLogos/{team['team']['name']}.png")
+            urllib.request.urlretrieve(url, f"{self.path}/eplLogos/{team['team']['name']}.png")
             standings[team['rank']] = {
                 'team' : team['team']['name'],
                 'points' : team['points'],
