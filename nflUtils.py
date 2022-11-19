@@ -36,8 +36,20 @@ class NFLUtils():
 
             homeTeam = game['competitions'][0]['competitors'][0]['team']['abbreviation']
             homeColor = game['competitions'][0]['competitors'][0]['team']['color']
+            if homeTeam in ['LV', 'PIT']:
+                homeColor = game['competitions'][0]['competitors'][0]['team']['alternateColor']
+            elif homeTeam == 'ATL':
+                homeColor = 'A71930'
+            elif homeTeam == 'NO':
+                homeColor = 'D3BC8D'
             awayTeam = game['competitions'][0]['competitors'][1]['team']['abbreviation']
             awayColor = game['competitions'][0]['competitors'][1]['team']['color']
+            if awayTeam in ['LV', 'PIT']:
+                awayColor = game['competitions'][0]['competitors'][1]['team']['alternateColor']
+            elif awayTeam == 'ATL':
+                awayColor = 'A71930'
+            elif awayTeam == 'NO':
+                awayColor = 'D3BC8D'
 
 
             # Only download logos once
