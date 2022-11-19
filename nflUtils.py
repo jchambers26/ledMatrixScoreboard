@@ -2,9 +2,7 @@ import requests
 import json
 from dateutil import parser
 from dateutil import tz
-import datetime
 import os
-import math
 import urllib
 
 class NFLUtils():
