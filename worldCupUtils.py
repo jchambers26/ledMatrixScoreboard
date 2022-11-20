@@ -3,6 +3,7 @@ import json
 import datetime
 import urllib
 import os
+from dateutil import tz, parser
 from apikeyPRIVATE import world_cup_email, world_cup_pw
 
 class WorldCupUtils():
@@ -11,7 +12,7 @@ class WorldCupUtils():
         self.path = "/home/pi/Documents/Scoreboard/"
         self.email = world_cup_email
         self.pw = world_cup_pw
-        self.token = self.apiLogin()
+        self.token = None
 
     
     def apiLogin(self):
@@ -28,6 +29,8 @@ class WorldCupUtils():
         return response['data']['token']
 
     def worldCupMatches(self):
+
+        self.token = self.apiLogin()
 
         headers = {
             'Content-Type': 'application/json',
@@ -91,6 +94,54 @@ class WorldCupUtils():
 
         with open(self.path + "worldCupMatches.json", 'w') as file:
             json.dump(matches, file)
+
+    def worldCupMatchesESPN(self):
+        response = requests.get("https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard").json()
+
+        games = {}
+
+        localZone = tz.tzlocal()
+
+        for game in response['events']:
+
+            date = game['date']
+
+            utctime = parser.parse(date)
+            time = utctime.astimezone(localZone)
+
+            dayString = time.strftime('%A')[0:3]
+            year = time.year
+            month = time.month
+            day = time.day
+            hour = time.hour
+            minute = time.minute
+
+            home = game['competitions'][0]['competitors'][0]['team']['abbreviation']
+            away = game['competitions'][0]['competitors'][1]['team']['abbreviation']
+
+
+            data = {
+                    "home" : home,
+                    "away" : away,
+                    "year" : year,
+                    "month" : month,
+                    "day" : day,
+                    "dayString" : dayString,
+                    "hour" : hour,
+                    "minute" : minute,
+                    "time" : game['competitions'][0]['status']['displayClock'][0:2],
+                    "finished" : game['competitions'][0]['status']['type']['completed'],
+                    "group" : "n/a",
+                    "homeScore" : game['competitions'][0]['competitors'][0]['score'],
+                    "awayScore" : game['competitions'][0]['competitors'][1]['score'],
+                }
+
+            games[f"{home} vs {away}"] = [data]
+
+        with open(self.path + "worldCupMatchesESPN.json", 'w') as file:
+            json.dump(games, file)
+
+
 
     def convertName(self, name):
 
@@ -168,5 +219,6 @@ class WorldCupUtils():
 
 
 if __name__ == '__main__':
-    WorldCupUtils().worldCupMatches()      
+    WorldCupUtils().worldCupMatches() 
+    WorldCupUtils().worldCupMatchesESPN()     
 

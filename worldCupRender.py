@@ -89,7 +89,7 @@ class WorldCupRender:
                 graphics.DrawText(canvas, teamFont, 5, 7, graphics.Color(255, 255, 255), f"{home}")
                 graphics.DrawText(canvas, teamFont, 44, 7, graphics.Color(255, 255, 255), f"{away}")
 
-                if matchTime == "notstarted":
+                if matchTime == 'notstarted':
 
                     month = self.monthConverter[month]
                     if hour < 10:
@@ -104,16 +104,16 @@ class WorldCupRender:
 
                 else:
 
-                    if finished == "FALSE":
+                    if finished == "FALSE" or not finished:
 
                         if matchTime < 10:
                             matchTime = "0" + str(minute)
 
                     else:
-                        minute = "FT"
+                        matchTime = "FT"
                     
-                    graphics.DrawText(canvas, teamFont, 27, 7, graphics.Color(255, 255, 255), group)
-                    graphics.DrawText(canvas, dataFont, 28, 16, graphics.Color(255, 255, 255), str(minute))
+                    graphics.DrawText(canvas, teamFont, 30, 7, graphics.Color(255, 255, 255), group)
+                    graphics.DrawText(canvas, dataFont, 28, 16, graphics.Color(255, 255, 255), str(matchTime))
                     graphics.DrawText(canvas, dataFont, 26, 24, graphics.Color(255, 255, 255), f"{homeScore}-{awayScore}")
 
 
