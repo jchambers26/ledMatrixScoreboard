@@ -48,6 +48,9 @@ class NFLRender():
             homeScore = game['homeScore']
             awayScore = game['awayScore']
             timeRemaining = game['timeRemaining']
+            possession = game['possession']
+            homeID = game['homeID']
+            awayID = game['awayID']
             if len(timeRemaining) == 4:
                 timeRemaining = "0" + timeRemaining
             quarter = game['quarter']
@@ -76,12 +79,13 @@ class NFLRender():
                 for y in range(23):
                     self.drawPixel(canvas, x + 40, y + 8, awayLogo[x, y])
 
-            if status == 'pre':
-                homeCoord = 6 if len(homeTeam) == 2 else 4
-                awayCoord = 48 if len(awayTeam) == 2 else 46
-                graphics.DrawText(canvas, teamFont, homeCoord, 7, graphics.Color(homeColor[0], homeColor[1], homeColor[2]), f"{homeTeam}")
-                graphics.DrawText(canvas, teamFont, awayCoord, 7, graphics.Color(awayColor[0], awayColor[1], awayColor[2]), f"{awayTeam}")
+            homeCoord = 6 if len(homeTeam) == 2 else 4
+            awayCoord = 48 if len(awayTeam) == 2 else 46
+            graphics.DrawText(canvas, teamFont, homeCoord, 7, graphics.Color(homeColor[0], homeColor[1], homeColor[2]), f"{homeTeam}")
+            graphics.DrawText(canvas, teamFont, awayCoord, 7, graphics.Color(awayColor[0], awayColor[1], awayColor[2]), f"{awayTeam}")
 
+
+            if status == 'pre':
                 if minute < 10:
                     minute = "0" + str(minute)
 
@@ -93,26 +97,34 @@ class NFLRender():
                 graphics.DrawText(canvas, dataFont, 28, 28, graphics.Color(255, 255, 255), str(day))
 
             elif status == 'in':
-                homeCoord = 6 if int(homeScore) >= 10 else 8
-                awayCoord = 48 if int(awayScore) >= 10 else 50
+                timeCoord = 22 if hour >= 10 else 24
 
-                graphics.DrawText(canvas, teamFont, homeCoord, 7, graphics.Color(homeColor[0], homeColor[1], homeColor[2]), homeScore)
-                graphics.DrawText(canvas, teamFont, awayCoord, 7, graphics.Color(awayColor[0], awayColor[1], awayColor[2]), awayScore)
+                
+                homeScoreCoord = 30 if int(homeScore) < 10 else 28
+                awayScoreCoord = 30 if int(awayScore) < 10 else 28
 
                 graphics.DrawText(canvas, dataFont, timeCoord, 7, graphics.Color(255, 255, 255), timeRemaining)
                 graphics.DrawText(canvas, dataFont, 28, 21, graphics.Color(255, 255, 255), f"Q{quarter}")
+                graphics.DrawText(canvas, dataFont, homeScoreCoord, 14, graphics.Color(homeColor[0], homeColor[1], homeColor[2]), homeScore)
+                graphics.DrawText(canvas, dataFont, awayScoreCoord, 28, graphics.Color(awayColor[0], awayColor[1], awayColor[2]), awayScore)        
+
+                # Possession Arrow
+                if possession == homeID:
+                    graphics.DrawText(canvas, dataFont, homeScoreCoord - 5, 14, graphics.Color(255, 255, 255), "<")
+                else:
+                    padding = 5 if int(awayScore) < 10 else 10
+                    graphics.DrawText(canvas, dataFont, awayScoreCoord + padding, 28, graphics.Color(255, 255, 255), ">")
+
 
             elif status == 'post':
-                homeCoord = 6 if int(homeScore) >= 10 else 8
-                awayCoord = 48 if int(awayScore) >= 10 else 50    
 
-                graphics.DrawText(canvas, teamFont, homeCoord, 7, graphics.Color(homeColor[0], homeColor[1], homeColor[2]), f"{homeTeam}")
-                graphics.DrawText(canvas, teamFont, awayCoord, 7, graphics.Color(awayColor[0], awayColor[1], awayColor[2]), f"{awayTeam}")
+                homeScoreCoord = 30 if int(homeScore) < 10 else 28
+                awayScoreCoord = 30 if int(awayScore) < 10 else 28
 
                 graphics.DrawText(canvas, dataFont, 22, 7, graphics.Color(255, 255, 255), "FINAL") 
-                graphics.DrawText(canvas, dataFont, 28, 14, graphics.Color(homeColor[0], homeColor[1], homeColor[2]), homeScore)
+                graphics.DrawText(canvas, dataFont, homeScoreCoord, 14, graphics.Color(homeColor[0], homeColor[1], homeColor[2]), homeScore)
                 graphics.DrawText(canvas, dataFont, 28, 21, graphics.Color(255, 255, 255), "--") 
-                graphics.DrawText(canvas, dataFont, 28, 28, graphics.Color(awayColor[0], awayColor[1], awayColor[2]), awayScore)        
+                graphics.DrawText(canvas, dataFont, awayScoreCoord, 28, graphics.Color(awayColor[0], awayColor[1], awayColor[2]), awayScore)        
 
             canvas = matrix.SwapOnVSync(canvas)
             time.sleep(5)

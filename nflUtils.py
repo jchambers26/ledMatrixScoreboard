@@ -35,21 +35,42 @@ class NFLUtils():
             minute = time.minute
 
             homeTeam = game['competitions'][0]['competitors'][0]['team']['abbreviation']
+            homeID = game['competitions'][0]['competitors'][0]['id']
             homeColor = game['competitions'][0]['competitors'][0]['team']['color']
-            if homeTeam in ['LV', 'PIT']:
+            if homeTeam in ['LV', 'PIT', 'PHI', 'BAL', 'HOU', 'DEN', 'MIN', 'DAL', 'LAC', 'LAR', 'NE', 'NYJ']:
                 homeColor = game['competitions'][0]['competitors'][0]['team']['alternateColor']
             elif homeTeam == 'ATL':
                 homeColor = 'A71930'
             elif homeTeam == 'NO':
                 homeColor = 'D3BC8D'
+            elif homeTeam == 'CHI':
+                homeColor = 'C83803'
+            elif awayTeam == 'WSH':
+                awayColor = 'FFB612'
+            elif awayTeam == 'CLE':
+                awayColor = 'FF3C00'
+
             awayTeam = game['competitions'][0]['competitors'][1]['team']['abbreviation']
+            awayID = game['competitions'][0]['competitors'][1]['id']
             awayColor = game['competitions'][0]['competitors'][1]['team']['color']
-            if awayTeam in ['LV', 'PIT']:
+            if awayTeam in ['LV', 'PIT', 'PHI', 'BAL', 'HOU', 'DEN', 'MIN', 'DAL', 'LAC', 'LAR', 'NE', 'NYJ']:
                 awayColor = game['competitions'][0]['competitors'][1]['team']['alternateColor']
             elif awayTeam == 'ATL':
                 awayColor = 'A71930'
             elif awayTeam == 'NO':
                 awayColor = 'D3BC8D'
+            elif awayTeam == 'CHI':
+                awayColor = 'C83803'
+            elif awayTeam == 'WSH':
+                awayColor = 'FFB612'
+            elif awayTeam == 'CLE':
+                awayColor = 'FF3C00'
+
+
+            try:
+                possession = game['competitions'][0]['situation']['possession']
+            except:
+                possession = None
 
 
             # Only download logos once
@@ -69,7 +90,10 @@ class NFLUtils():
 
             data = {
                 "homeTeam" : homeTeam,
+                "homeID" : homeID,
                 "awayTeam" : awayTeam,
+                "awayID" : awayID,
+                "possession" : possession,
                 "year" : year,
                 "month" : month,
                 "day" : day,
