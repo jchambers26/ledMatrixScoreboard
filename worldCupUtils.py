@@ -207,7 +207,7 @@ class WorldCupUtils():
             return "POR"
         elif name == "South Korea":
             return "KOR"
-        elif name == "Uruquay":
+        elif name == "Uruguay":
             return "URU"
         
         
