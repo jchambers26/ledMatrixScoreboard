@@ -105,15 +105,15 @@ class WorldCupRender:
                 else:
 
                     if finished == "FALSE" or not finished:
-
-                        if matchTime < 10:
-                            matchTime = "0" + str(minute)
+                        
+                        if matchTime == 'hf':
+                            matchTime = 'ht'
 
                     else:
                         matchTime = "FT"
                     
                     graphics.DrawText(canvas, teamFont, 30, 7, graphics.Color(255, 255, 255), group)
-                    graphics.DrawText(canvas, dataFont, 28, 16, graphics.Color(255, 255, 255), str(matchTime))
+                    graphics.DrawText(canvas, dataFont, 28, 16, graphics.Color(255, 255, 255), str(matchTime.upper()))
                     graphics.DrawText(canvas, dataFont, 26, 24, graphics.Color(255, 255, 255), f"{homeScore}-{awayScore}")
 
 
